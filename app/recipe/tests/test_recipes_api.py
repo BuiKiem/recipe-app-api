@@ -133,8 +133,8 @@ class PrivateRecipeApiTestCase(TestCase):
 
     def test_create_recipe_with_ingredients(self):
         """Test create a recipe with ingredients."""
-        ingredient1 = sample_tag(user=self.user, name='Prawns')
-        ingredient2 = sample_tag(user=self.user, name='Ginger')
+        ingredient1 = sample_ingredient(user=self.user, name='Prawns')
+        ingredient2 = sample_ingredient(user=self.user, name='Ginger')
         payload = {
             'title': 'Thai prawn red curry',
             'ingredients': [ingredient1.id, ingredient2.id],
