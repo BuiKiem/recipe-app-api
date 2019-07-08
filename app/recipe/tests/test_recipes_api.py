@@ -219,9 +219,9 @@ class RecipeImageUploadTestCase(TestCase):
         """Upload a valid image is successful."""
         url = image_upload_url(self.recipe.id)
         with tempfile.NamedTemporaryFile(suffix='.jpg') as ntf:
-            img = Image.new('rgb', (10, 10))
-            img.save(ntf, format='.jpg')
-            ntf.seek()
+            img = Image.new('RGB', (10, 10))
+            img.save(ntf, format='JPEG')
+            ntf.seek(0)
 
             response = self.client.post(url, {'image': ntf}, format='multipart')
 
