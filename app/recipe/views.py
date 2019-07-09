@@ -80,15 +80,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
     @action(methods=['POST'], detail=True, url_path='upload-image')
-    def upload_image(self, request: Request, _pk: int = None) -> Response:
+    def upload_image(self, request: Request, pk: int = None) -> Response:
         """Upload an image to the selected recipe."""
+        del pk
+
         recipe = self.get_object()
         serializer = self.get_serializer(recipe, data=request.data)
 
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
