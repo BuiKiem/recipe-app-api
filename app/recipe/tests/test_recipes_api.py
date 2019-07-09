@@ -230,7 +230,7 @@ class PrivateRecipeApiTestCase(TestCase):
         ingredient2 = sample_ingredient(user=self.user, name='Chicken')
         recipe1.ingredients.add(ingredient1)
         recipe2.ingredients.add(ingredient2)
-        recipe3 = sample_ingredient(user=self.user, name='Steak and Mushroom')
+        recipe3 = sample_recipe(user=self.user, title='Steak and Mushroom')
         serializer1 = RecipeSerializer(recipe1)
         serializer2 = RecipeSerializer(recipe2)
         serializer3 = RecipeSerializer(recipe3)

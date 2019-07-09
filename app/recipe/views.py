@@ -1,3 +1,5 @@
+from typing import List
+
 from django.db.models.query import QuerySet
 from rest_framework import viewsets, mixins, status
 from rest_framework.authentication import TokenAuthentication
@@ -45,7 +47,18 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self) -> QuerySet:
         """Retrieve the recipes for the authenticated user."""
-        return self.queryset.filter(user=self.request.user)
+        qs = self.queryset.filter(user=self.request.user)
+        tags = self.request.query_params.get('tags')
+        ingredients = self.request.query_params.get('ingredients')
+
+        if tags:
+            tag_ids = self._params_to_ints(tags)
+            qs = qs.filter(tags__id__in=tag_ids)
+        if ingredients:
+            ingredient_ids = self._params_to_ints(ingredients)
+            qs = qs.filter(ingredients__id__in=ingredient_ids)
+
+        return qs
 
     def get_serializer_class(self):
         """Return appropriate serializer class."""
@@ -67,7 +80,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
     @action(methods=['POST'], detail=True, url_path='upload-image')
-    def upload_image(self, request: Request, pk: int = None) -> Response:
+    def upload_image(self, request: Request, _pk: int = None) -> Response:
         """Upload an image to the selected recipe."""
         recipe = self.get_object()
         serializer = self.get_serializer(recipe, data=request.data)
@@ -77,3 +90,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @staticmethod
+    def _params_to_ints(params: str) -> List[int]:
+        """Convert a string of IDs to a list intergers of IDs."""
+        return [int(str_id) for str_id in params.split(',')]
